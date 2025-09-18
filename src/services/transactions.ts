@@ -33,13 +33,30 @@ export interface TransactionsQueryParams {
   currency?: string
   language?: string
   input_method?: 'audio' | 'text'
+  page?: number
+  pageSize?: number
+  // Legacy support
   skip?: number
   limit?: number
 }
 
+export interface PaginationMeta {
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+  hasNext: boolean
+  hasPrevious: boolean
+}
+
+export interface PaginatedTransactionResponse {
+  data: Transaction[]
+  pagination: PaginationMeta
+}
+
 export const transactionsService = {
-  async getTransactions(params?: TransactionsQueryParams): Promise<Transaction[]> {
-    const response = await apiClient.get<Transaction[]>('/api/transactions/', {
+  async getTransactions(params?: TransactionsQueryParams): Promise<PaginatedTransactionResponse> {
+    const response = await apiClient.get<PaginatedTransactionResponse>('/api/transactions/', {
       params,
     })
     return response.data
