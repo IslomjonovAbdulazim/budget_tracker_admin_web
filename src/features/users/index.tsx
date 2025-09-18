@@ -1,24 +1,23 @@
-import { getRouteApi } from '@tanstack/react-router'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { UsersDialogs } from './components/users-dialogs'
-import { UsersPrimaryButtons } from './components/users-primary-buttons'
-import { UsersProvider } from './components/users-provider'
-import { UsersTable } from './components/users-table'
-import { users } from './data/users'
-
-const route = getRouteApi('/_authenticated/users/')
+import { Users as UsersIcon, RefreshCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useUsers } from '@/hooks/use-users'
+import { UsersTable } from './components/users-table-simple'
 
 export function Users() {
-  const search = route.useSearch()
-  const navigate = route.useNavigate()
+  const { data: users, isLoading, error, refetch, isRefetching } = useUsers({
+    skip: 0,
+    limit: 100,
+  })
 
   return (
-    <UsersProvider>
+    <>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
@@ -29,21 +28,71 @@ export function Users() {
       </Header>
 
       <Main>
-        <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
-          <div>
-            <h2 className='text-2xl font-bold tracking-tight'>User List</h2>
-            <p className='text-muted-foreground'>
-              Manage your users and their roles here.
-            </p>
+        <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
+          <div className='flex items-center gap-3'>
+            <div className='rounded-lg bg-primary/10 p-2'>
+              <UsersIcon className='h-6 w-6 text-primary' />
+            </div>
+            <div>
+              <h2 className='text-2xl font-bold tracking-tight'>Users</h2>
+              <p className='text-muted-foreground'>
+                Manage Telegram bot users
+              </p>
+            </div>
           </div>
-          <UsersPrimaryButtons />
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isRefetching}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
         </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-          <UsersTable data={users} search={search} navigate={navigate} />
-        </div>
-      </Main>
 
-      <UsersDialogs />
-    </UsersProvider>
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground mb-4">Failed to load users</p>
+            <Button onClick={() => refetch()}>Try Again</Button>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-4 md:grid-cols-4 mb-6">
+              <div className="rounded-lg border p-3">
+                <div className="text-2xl font-bold">{users?.length || 0}</div>
+                <p className="text-xs text-muted-foreground">Total Users</p>
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-2xl font-bold">
+                  {users?.filter(u => u.username).length || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">With Username</p>
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-2xl font-bold">
+                  {users?.filter(u => u.fullname).length || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">With Full Name</p>
+              </div>
+              <div className="rounded-lg border p-3">
+                <div className="text-2xl font-bold">
+                  {users?.filter(u => !u.username && !u.fullname).length || 0}
+                </div>
+                <p className="text-xs text-muted-foreground">Anonymous</p>
+              </div>
+            </div>
+            <UsersTable data={users || []} />
+          </>
+        )}
+      </Main>
+    </>
   )
 }

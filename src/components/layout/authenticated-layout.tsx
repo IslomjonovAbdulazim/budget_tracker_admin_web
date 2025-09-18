@@ -1,6 +1,8 @@
-import { Outlet } from '@tanstack/react-router'
+import { useEffect } from 'react'
+import { Outlet, useNavigate } from '@tanstack/react-router'
 import { getCookie } from '@/lib/cookies'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/auth-store'
 import { LayoutProvider } from '@/context/layout-provider'
 import { SearchProvider } from '@/context/search-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -12,7 +14,20 @@ type AuthenticatedLayoutProps = {
 }
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+  const { auth } = useAuthStore()
+  const navigate = useNavigate()
   const defaultOpen = getCookie('sidebar_state') !== 'false'
+
+  useEffect(() => {
+    if (!auth.isAuthenticated()) {
+      navigate({ to: '/sign-in', replace: true })
+    }
+  }, [auth, navigate])
+
+  if (!auth.isAuthenticated()) {
+    return null
+  }
+
   return (
     <SearchProvider>
       <LayoutProvider>
