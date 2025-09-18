@@ -11,7 +11,6 @@ import {
   UserCog,
   Users,
   MessagesSquare,
-  AudioWaveform,
   Command,
   Tags,
   Receipt,

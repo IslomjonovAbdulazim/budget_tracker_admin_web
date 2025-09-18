@@ -1,9 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   User,
 } from 'lucide-react'

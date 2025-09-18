@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { useAuthStore } from '@/stores/auth-store'
-import { formatPhoneInput, formatPhoneForAPI, validatePhoneNumber } from '@/lib/phone-utils'
+import { formatPhoneInput, validatePhoneNumber } from '@/lib/phone-utils'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {

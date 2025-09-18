@@ -13,23 +13,21 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AudioPlayer } from './audio-player'
 import { useAudioManager } from '@/hooks/use-audio-manager'
 import { transactionsService } from '@/services/transactions'
-import { Mic, Type, Filter, X, Play, Pause, Info, Clock, Globe, DollarSign, FileText, Calendar, User as UserIcon } from 'lucide-react'
+import { Mic, Type, X, Play, Pause, Info, DollarSign } from 'lucide-react'
 
 interface TransactionsTableProps {
   data: Transaction[]
@@ -311,17 +309,6 @@ export function TransactionsTable({ data, onFiltersChange, currentFilters, isLoa
     }).format(displayAmount)
   }
 
-  const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), 'MMM dd, yyyy HH:mm')
-    } catch {
-      return dateString
-    }
-  }
-
-  const getUniqueValues = (field: keyof Transaction) => {
-    return [...new Set(data.map(item => item[field]).filter(Boolean))]
-  }
 
   // Remove this early return - we want to show filters even with no data
 

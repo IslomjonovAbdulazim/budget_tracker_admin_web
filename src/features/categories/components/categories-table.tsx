@@ -18,7 +18,7 @@ interface CategoriesTableProps {
 }
 
 export function CategoriesTable({ typeFilter }: CategoriesTableProps) {
-  const [params, setParams] = useState<CategoriesQueryParams>({
+  const [params] = useState<CategoriesQueryParams>({
     type: typeFilter,
     skip: 0,
     limit: 100,
