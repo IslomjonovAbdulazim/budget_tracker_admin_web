@@ -42,7 +42,7 @@ class AudioManager {
   }
 
   isPlaying(id: string): boolean {
-    return this.currentId === id && this.currentAudio && !this.currentAudio.paused
+    return this.currentId === id && !!this.currentAudio && !this.currentAudio.paused
   }
 
   addListener(callback: () => void): void {
